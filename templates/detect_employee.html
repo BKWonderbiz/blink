@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Webcam Stream</title>
+  </head>
+  <body>
+    <h1>Webcam Stream</h1>
+    <img id="video" width="640" height="480" />
+    <script>
+      const video = document.getElementById("video");
+      const websocket = new WebSocket(`ws://${window.location.host}/ws`);
+
+      websocket.binaryType = "arraybuffer";
+      websocket.onmessage = (event) => {
+        const arrayBufferView = new Uint8Array(event.data);
+        const blob = new Blob([arrayBufferView], { type: "image/png" });
+        const url = URL.createObjectURL(blob);
+        video.src = url;
+      };
+    </script>
+  </body>
+</html>
+
+<!-- 
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Webcam Stream</title>
+    <style>
+      #container {
+        display: flex;
+      }
+      #live-feed,
+      #processed-feed {
+        width: 640px;
+        height: 480px;
+        margin: 0 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Webcam Stream</h1>
+    <div id="container">
+      <img id="live-feed" alt="Live Feed" />
+      <img id="processed-feed" alt="Processed Feed" />
+    </div>
+    <script>
+      const liveFeed = document.getElementById("live-feed");
+      const processedFeed = document.getElementById("processed-feed");
+      const websocket = new WebSocket(`ws://${window.location.host}/ws`);
+
+      websocket.binaryType = "arraybuffer";
+      websocket.onmessage = (event) => {
+        const arrayBufferView = new Uint8Array(event.data);
+        const blob = new Blob([arrayBufferView], { type: "image/png" });
+        const url = URL.createObjectURL(blob);
+
+        // Display the processed frame on the right
+        processedFeed.src = url;
+
+        // Optionally, you can also update the live feed
+        liveFeed.src = url;
+      };
+    </script>
+  </body>
+</html> -->
